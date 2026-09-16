@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meus Jogos</title>
+<meta name="description" content="Um site com vários jogos gratuitos para jogar direto no navegador." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>" />
+<link rel="stylesheet" href="assets/main.css" />
+</head>
+<body>
+<header class="hub-header">
+  <h1>🎮 Meus Jogos</h1>
+  <p>Jogos grátis, direto no navegador. Sem instalar nada.</p>
+</header>
+
+<!-- Reserve de anúncio (topo) — ver README para ativar o Google AdSense -->
+<div class="ad-slot ad-slot-top" aria-hidden="true"><!-- AD_SLOT_TOP --></div>
+
+<main class="hub-grid">
+  <a class="game-card" href="games/sudoku/index.html">
+    <div class="game-card-icon">🧩</div>
+    <div class="game-card-body">
+      <h2>Sudoku</h2>
+      <p>Clássico jogo de lógica com 6 níveis de dificuldade, dicas e anotações.</p>
+      <span class="play-tag">Jogar agora →</span>
+    </div>
+  </a>
+
+  <div class="game-card disabled">
+    <div class="game-card-icon">🔜</div>
+    <div class="game-card-body">
+      <h2>Em breve</h2>
+      <p>Novos jogos chegando em breve. Volte para conferir!</p>
+    </div>
+  </div>
+
+  <div class="game-card disabled">
+    <div class="game-card-icon">🔜</div>
+    <div class="game-card-body">
+      <h2>Em breve</h2>
+      <p>Tem alguma sugestão de jogo? Guarde a ideia para o próximo.</p>
+    </div>
+  </div>
+</main>
+
+<!-- Reserve de anúncio (rodapé) -->
+<div class="ad-slot ad-slot-bottom" aria-hidden="true"><!-- AD_SLOT_BOTTOM --></div>
+
+<footer class="hub-footer">
+  <p>Feito por Gabriel • &copy; <span id="year"></span></p>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
