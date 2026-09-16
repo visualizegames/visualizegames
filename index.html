@@ -3,82 +3,150 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Visualize Games</title>
-<meta name="description" content="Visualize Games — jogos gratuitos para jogar direto no navegador, sem instalar nada." />
+<title>Visualize Games — Jogos de tabuleiro grátis</title>
+<meta name="description" content="Visualize Games — jogos de tabuleiro gratuitos para jogar direto no navegador, sem instalar nada." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%234f6fe0%22/><text x=%2216%22 y=%2222%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2214%22 fill=%22white%22 text-anchor=%22middle%22>VG</text></svg>" />
 <link rel="stylesheet" href="assets/main.css" />
 </head>
 <body>
-<header class="hub-header">
-  <div class="brand">
-    <span class="brand-mark">VG</span>
-    <span class="brand-name">Visualize Games</span>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">VG</span>
+      <span class="brand-name">Visualize Games</span>
+    </a>
+    <label class="search-wrap">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
+        <path d="m20 20-3.8-3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <input id="search-input" type="search" placeholder="Buscar jogos de tabuleiro..." autocomplete="off" />
+    </label>
   </div>
-  <p class="hub-tagline">Jogos simples para jogar direto no navegador — sem baixar nada, sem cadastro.</p>
 </header>
 
-<!-- Reserve de anúncio (topo) — ver README para ativar o Google AdSense -->
-<div class="ad-slot ad-slot-top" aria-hidden="true"><!-- AD_SLOT_TOP --></div>
-
-<main class="hub-grid">
-  <a class="game-card" href="games/sudoku/index.html">
-    <div class="game-thumb">
-      <svg viewBox="0 0 48 48" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="40" height="40" rx="5" stroke="currentColor" stroke-width="2.5"/>
-        <path d="M17.3 4v40M30.7 4v40M4 17.3h40M4 30.7h40" stroke="currentColor" stroke-width="1.6" opacity="0.55"/>
-        <circle cx="24" cy="24" r="2.6" fill="currentColor"/>
-        <circle cx="10.7" cy="10.7" r="2.2" fill="currentColor" opacity="0.7"/>
-        <circle cx="37.3" cy="37.3" r="2.2" fill="currentColor" opacity="0.7"/>
+<nav class="category-row" aria-label="Categorias">
+  <button class="chip active" data-category="logica" type="button">
+    <span class="chip-icon">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="3" width="18" height="18" rx="2.5" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M9 3v18M15 3v18M3 9h18M3 15h18" stroke="currentColor" stroke-width="1.3" opacity="0.6"/>
       </svg>
-    </div>
-    <div class="game-card-body">
-      <div class="game-card-heading">
-        <h2>Sudoku</h2>
-        <span class="game-tag">Puzzle</span>
-      </div>
-      <p>O clássico jogo de lógica. Seis níveis de dificuldade, anotações, dicas e cronômetro.</p>
-      <span class="play-tag">Jogar agora <span aria-hidden="true">→</span></span>
-    </div>
-  </a>
+    </span>
+    <span>Lógica</span>
+  </button>
 
-  <div class="game-card placeholder" aria-disabled="true">
-    <div class="game-thumb muted">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <span class="chip disabled" title="Em breve">
+    <span class="chip-icon">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="8.5" r="3" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M9 20h6M8 20c0-3 1-5 1-6.5h6c0 1.5 1 3.5 1 6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-    </div>
-    <div class="game-card-body">
-      <div class="game-card-heading">
-        <h2>Em breve</h2>
+    </span>
+    <span>Xadrez</span>
+    <em>em breve</em>
+  </span>
+
+  <span class="chip disabled" title="Em breve">
+    <span class="chip-icon">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.7"/>
+        <circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.4" opacity="0.7"/>
+      </svg>
+    </span>
+    <span>Damas</span>
+    <em>em breve</em>
+  </span>
+
+  <span class="chip disabled" title="Em breve">
+    <span class="chip-icon">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3.5" y="5" width="11" height="15" rx="1.8" transform="rotate(-8 9 12.5)" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="9.5" y="5" width="11" height="15" rx="1.8" transform="rotate(8 15 12.5)" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+    </span>
+    <span>Cartas</span>
+    <em>em breve</em>
+  </span>
+
+  <span class="chip disabled" title="Em breve">
+    <span class="chip-icon">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.7"/>
+        <text x="12" y="16.5" font-family="Arial" font-weight="700" font-size="10" fill="currentColor" text-anchor="middle">A</text>
+      </svg>
+    </span>
+    <span>Palavras</span>
+    <em>em breve</em>
+  </span>
+</nav>
+
+<main>
+  <section class="hero">
+    <a class="hero-card" href="games/sudoku/index.html" style="background-image:url('assets/images/sudoku-board.png')">
+      <div class="hero-overlay">
+        <span class="hero-tag">Puzzle · Lógica</span>
+        <h1>Sudoku</h1>
+        <p>Seis níveis de dificuldade, dicas, anotações e cronômetro. Jogue direto no navegador, sem instalar nada.</p>
+        <span class="hero-cta">Jogar agora <span aria-hidden="true">→</span></span>
       </div>
-      <p>Estamos preparando o próximo jogo. Volte em breve para conferir.</p>
-    </div>
+    </a>
+  </section>
+
+  <div class="ad-slot ad-slot-top" aria-hidden="true">
+    <span class="ad-label">Publicidade</span>
+    <!-- AD_SLOT_TOP — ver README para ativar o Google AdSense -->
   </div>
 
-  <div class="game-card placeholder" aria-disabled="true">
-    <div class="game-thumb muted">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
+  <section class="game-section">
+    <div class="section-heading">
+      <h2>Todos os jogos</h2>
+      <span class="section-count" id="game-count"></span>
     </div>
-    <div class="game-card-body">
-      <div class="game-card-heading">
-        <h2>Em breve</h2>
+
+    <div class="game-grid" id="game-grid">
+      <a class="game-card" data-name="sudoku" data-category="logica" href="games/sudoku/index.html" style="background-image:url('assets/images/sudoku-board.png')">
+        <div class="game-card-overlay">
+          <span class="game-tag">Lógica</span>
+          <h3>Sudoku</h3>
+        </div>
+      </a>
+
+      <div class="game-card placeholder">
+        <div class="placeholder-inner">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Em breve</span>
+        </div>
       </div>
-      <p>Tem uma sugestão de jogo? Guarde a ideia — mais novidades chegando.</p>
+
+      <div class="game-card placeholder">
+        <div class="placeholder-inner">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span>Em breve</span>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <p class="empty-state" id="empty-state" hidden>
+      Nenhum jogo encontrado. Já temos <strong>Sudoku</strong> disponível — mais jogos de tabuleiro chegando em breve.
+    </p>
+  </section>
 </main>
 
-<!-- Reserve de anúncio (rodapé) -->
-<div class="ad-slot ad-slot-bottom" aria-hidden="true"><!-- AD_SLOT_BOTTOM --></div>
+<div class="ad-slot ad-slot-bottom" aria-hidden="true">
+  <span class="ad-label">Publicidade</span>
+  <!-- AD_SLOT_BOTTOM -->
+</div>
 
 <footer class="hub-footer">
   <p>Feito por Visualize Games &copy; <span id="year"></span></p>
 </footer>
 
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-</script>
+<script src="assets/main.js"></script>
 </body>
 </html>
