@@ -707,3 +707,6 @@ function moveSelection(key) {
 
 buildBoardDOM();
 startNewGame(state.difficulty);
+
+const footerYearEl = document.getElementById("footer-year");
+if (footerYearEl) footerYearEl.textContent = new Date().getFullYear();

@@ -10,10 +10,12 @@ cronômetro e contador de erros.
 sudoku-site/
 ├── index.html              -> página inicial (lista de jogos)
 ├── assets/
-│   └── main.css             -> estilo da página inicial
+│   ├── main.css             -> estilo da página inicial
+│   ├── main.js               -> busca e filtro por categoria
+│   └── images/               -> miniaturas usadas nos cards
 ├── games/
 │   └── sudoku/
-│       ├── index.html       -> o jogo em si
+│       ├── index.html       -> o jogo em si (+ texto explicativo sobre o Sudoku)
 │       ├── style.css
 │       └── script.js        -> gerador de tabuleiro + lógica do jogo
 └── README.md                -> este arquivo

@@ -54,7 +54,7 @@ body {
 .back-mark {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
+  border-radius: 0;
   background: linear-gradient(135deg, var(--blue) 0%, #7c8cf0 100%);
   color: #fff;
   font-size: 0.65rem;
@@ -109,9 +109,9 @@ body {
   font-size: 0.92rem;
   font-weight: 600;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: 0;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 .diff-btn:hover { background: var(--related); color: var(--text); }
 .diff-btn.active {
@@ -130,9 +130,9 @@ body {
 .board-container {
   position: relative;
   background: var(--card);
-  border-radius: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 0;
   padding: 10px;
-  box-shadow: 0 2px 10px rgba(30, 40, 70, 0.06);
 }
 
 .board {
@@ -140,7 +140,7 @@ body {
   grid-template-columns: repeat(9, minmax(34px, 48px));
   grid-template-rows: repeat(9, minmax(34px, 48px));
   border: 2px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -199,7 +199,7 @@ body {
   inset: 10px;
   background: rgba(244, 246, 251, 0.92);
   backdrop-filter: blur(6px);
-  border-radius: 6px;
+  border-radius: 0;
   display: none;
   flex-direction: column;
   align-items: center;
@@ -224,18 +224,18 @@ body {
 
 .stat-card {
   background: var(--card);
-  border-radius: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 0;
   padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 2px 10px rgba(30, 40, 70, 0.06);
 }
 
 .stat-icon {
   width: 38px;
   height: 38px;
-  border-radius: 10px;
+  border-radius: 0;
   background: var(--related);
   color: var(--blue-dark);
   display: flex;
@@ -269,7 +269,7 @@ body {
   color: var(--blue);
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: 0;
   cursor: pointer;
   font-size: 0.85rem;
   display: flex;
@@ -287,7 +287,7 @@ body {
 .tool-btn {
   background: var(--card);
   border: 1px solid var(--line-soft);
-  border-radius: 10px;
+  border-radius: 0;
   padding: 8px 4px;
   cursor: pointer;
   display: flex;
@@ -314,7 +314,7 @@ body {
 .num-btn {
   background: var(--related);
   border: none;
-  border-radius: 10px;
+  border-radius: 0;
   padding: 14px 0;
   font-size: 1.3rem;
   font-weight: 600;
@@ -329,7 +329,7 @@ body {
   background: var(--blue);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 0;
   padding: 14px;
   font-size: 1rem;
   font-weight: 700;
@@ -355,12 +355,12 @@ body {
 
 .overlay-card {
   background: var(--card);
-  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
   padding: 28px 24px;
   max-width: 340px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
 }
 .overlay-card h2 { margin: 0 0 10px; }
 .overlay-card p { color: var(--text-soft); margin: 0 0 20px; }
@@ -370,7 +370,7 @@ body {
   background: var(--blue);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 0;
   padding: 12px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -378,6 +378,63 @@ body {
   font-family: inherit;
 }
 .overlay-btn:hover { background: var(--blue-dark); }
+
+/* ---------- Conteúdo (texto sobre o jogo) ---------- */
+
+.game-info {
+  max-width: 900px;
+  margin: 10px auto 0;
+  padding: 0 16px 50px;
+  color: var(--text);
+}
+
+.game-info .lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+  border-left: 3px solid var(--blue);
+  padding-left: 16px;
+  margin: 0 0 36px;
+}
+
+.game-info h2 {
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.game-info section { margin-bottom: 32px; }
+
+.game-info p {
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin: 0 0 12px;
+}
+
+.game-info ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.game-info li {
+  line-height: 1.6;
+  color: var(--text-soft);
+  padding: 8px 0 8px 16px;
+  border-left: 2px solid var(--line-soft);
+  margin-bottom: 6px;
+}
+
+.game-info li strong { color: var(--text); }
+
+.game-footer {
+  text-align: center;
+  padding: 22px 20px;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  border-top: 1px solid var(--line-soft);
+}
 
 @media (max-width: 560px) {
   .board {
