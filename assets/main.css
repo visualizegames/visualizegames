@@ -1,11 +1,13 @@
 :root {
-  --blue: #4f6fe0;
-  --blue-dark: #3a56c4;
+  --navy: #12172b;
+  --navy-soft: #1c2340;
+  --accent: #4f6fe0;
+  --accent-2: #7c8cf0;
   --bg: #f4f6fb;
   --card: #ffffff;
   --text: #262b36;
   --text-soft: #7c8394;
-  --line-soft: #d7dce6;
+  --line-soft: #e1e5ee;
 }
 
 * { box-sizing: border-box; }
@@ -20,64 +22,159 @@ body {
   flex-direction: column;
 }
 
+/* ---------- Header ---------- */
+
 .hub-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+  color: #fff;
+  padding: 36px 20px 40px;
   text-align: center;
-  padding: 40px 20px 20px;
 }
-.hub-header h1 { margin: 0 0 8px; font-size: 2rem; }
-.hub-header p { margin: 0; color: var(--text-soft); }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.brand-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.hub-tagline {
+  margin: 0;
+  color: #b7bdd4;
+  font-size: 0.95rem;
+  max-width: 420px;
+  margin-inline: auto;
+}
+
+/* ---------- Ad slots ---------- */
 
 .ad-slot { max-width: 728px; margin: 16px auto; }
 .ad-slot:empty { display: none; }
 
+/* ---------- Game grid ---------- */
+
 .hub-grid {
   flex: 1;
   max-width: 960px;
-  margin: 20px auto;
+  margin: -18px auto 0;
   padding: 0 20px 40px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 18px;
+  gap: 16px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .game-card {
   background: var(--card);
-  border-radius: 16px;
-  padding: 22px;
+  border-radius: 14px;
+  padding: 20px;
   text-decoration: none;
   color: inherit;
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-start;
-  box-shadow: 0 2px 10px rgba(30, 40, 70, 0.06);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(18, 23, 43, 0.06), 0 8px 24px rgba(18, 23, 43, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   border: 1px solid var(--line-soft);
 }
 
-.game-card:not(.disabled):hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(30, 40, 70, 0.12);
+.game-card:not(.placeholder):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(18, 23, 43, 0.06), 0 14px 30px rgba(18, 23, 43, 0.1);
+  border-color: #c9d2ee;
 }
 
-.game-card.disabled {
-  opacity: 0.55;
+.game-card.placeholder {
+  border-style: dashed;
+  box-shadow: none;
+  background: transparent;
   cursor: default;
 }
 
-.game-card-icon { font-size: 2.2rem; }
-.game-card-body h2 { margin: 0 0 6px; font-size: 1.15rem; }
-.game-card-body p { margin: 0 0 10px; color: var(--text-soft); font-size: 0.9rem; }
+.game-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #eef1fc;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.game-thumb.muted {
+  background: transparent;
+  border: 1.5px dashed var(--line-soft);
+  color: var(--text-soft);
+}
+
+.game-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.game-card-body h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.game-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  background: #eef1fc;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.game-card-body p {
+  margin: 0 0 10px;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.placeholder .game-card-body p { color: #a3a9ba; }
 
 .play-tag {
-  color: var(--blue);
+  color: var(--accent);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.87rem;
 }
+
+/* ---------- Footer ---------- */
 
 .hub-footer {
   text-align: center;
-  padding: 20px;
+  padding: 22px 20px;
   color: var(--text-soft);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
