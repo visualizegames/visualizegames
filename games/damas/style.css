@@ -1,0 +1,84 @@
+/* Estilos específicos do Damas — regras compartilhadas (topbar, abas,
+   sidebar, botões, modal, bloco de conteúdo) ficam em assets/base.css */
+
+:root {
+  --dark-square: #d7dce6;
+  --p1: #4f6fe0;
+  --p1-dark: #3a56c4;
+  --p2: #b23b3b;
+  --p2-dark: #8f2e2e;
+}
+
+.damas-tools { grid-template-columns: repeat(2, 1fr); }
+
+.board-area {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.board-container {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line-soft);
+  padding: 10px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(38px, 56px));
+  grid-template-rows: repeat(8, minmax(38px, 56px));
+  border: 2px solid var(--line-strong);
+}
+
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.square.light { background: var(--card); cursor: default; }
+.square.dark { background: var(--dark-square); cursor: default; }
+.square.dark.playable { cursor: pointer; }
+
+.square.selected { outline: 3px solid var(--blue); outline-offset: -3px; }
+.square.legal-move { outline: 3px solid var(--success); outline-offset: -3px; }
+.square.eligible .piece::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 2px dashed var(--success);
+}
+.square.hint-cell { outline: 3px solid #e0a72a; outline-offset: -3px; }
+
+.piece {
+  position: relative;
+  width: 62%;
+  height: 62%;
+  background: var(--p1);
+  border: 2px solid var(--p1-dark);
+}
+.piece.p2 { background: var(--p2); border-color: var(--p2-dark); }
+
+.piece .crown {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+@media (max-width: 560px) {
+  .board {
+    grid-template-columns: repeat(8, minmax(30px, 1fr));
+    grid-template-rows: repeat(8, minmax(30px, 1fr));
+  }
+}

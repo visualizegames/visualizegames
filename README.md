@@ -1,29 +1,42 @@
-# Meus Jogos — site com Sudoku
+# Visualize Games — site com vários jogos de tabuleiro
 
 Site estático (HTML + CSS + JS puro, sem dependências) pronto para publicar
-na web. Primeiro jogo: **Sudoku**, com 6 dificuldades, dicas, anotações,
-cronômetro e contador de erros.
+na web. Jogos disponíveis: **Sudoku** (6 dificuldades, dicas, anotações,
+cronômetro e contador de erros) e **Damas** (regras brasileiras, captura
+obrigatória, dama voadora e 3 níveis de dificuldade contra o computador).
 
 ## Estrutura
 
 ```
 sudoku-site/
-├── index.html              -> página inicial (lista de jogos)
+├── index.html              -> página inicial (lista de jogos, busca e filtro por categoria)
 ├── assets/
-│   ├── main.css             -> estilo da página inicial
-│   ├── main.js               -> busca e filtro por categoria
-│   └── images/               -> miniaturas usadas nos cards
+│   ├── main.css              -> estilo da página inicial
+│   ├── main.js                -> busca e filtro por categoria
+│   ├── base.css               -> estilo compartilhado por TODAS as páginas de jogo
+│   │                             (topo, abas de dificuldade, sidebar, botões, modal —
+│   │                             mantém o padrão quadrado/formal em todo o site)
+│   └── images/                -> miniaturas usadas nos cards
 ├── games/
-│   └── sudoku/
-│       ├── index.html       -> o jogo em si (+ texto explicativo sobre o Sudoku)
-│       ├── style.css
-│       └── script.js        -> gerador de tabuleiro + lógica do jogo
-└── README.md                -> este arquivo
+│   ├── sudoku/
+│   │   ├── index.html        -> o jogo em si (+ texto explicativo sobre o Sudoku)
+│   │   ├── style.css          -> só as regras específicas do tabuleiro de Sudoku
+│   │   └── script.js          -> gerador de tabuleiro + lógica do jogo
+│   └── damas/
+│       ├── index.html        -> o jogo em si (+ texto explicativo sobre Damas)
+│       ├── style.css          -> só as regras específicas do tabuleiro de Damas
+│       └── script.js          -> regras do jogo + IA (minimax) + interface
+└── README.md                 -> este arquivo
 ```
 
 Para adicionar um novo jogo no futuro: crie uma pasta `games/nome-do-jogo/`
-com seu próprio `index.html`, e adicione um novo card em `index.html` (na
-raiz) copiando o bloco `<a class="game-card" ...>` do Sudoku.
+com seu próprio `index.html` (linkando primeiro `../../assets/base.css` e
+depois um `style.css` só com as regras específicas daquele jogo, pra manter
+o visual quadrado/formal padrão do site), e adicione um novo card em
+`index.html` (na raiz) copiando o bloco `<a class="game-card" ...>` do
+Sudoku ou do Damas. Se o jogo for de uma categoria nova, também dá pra
+"ativar" o chip correspondente na `<nav class="category-row">` (hoje só
+Lógica e Damas estão ativos — os outros têm `em breve`).
 
 ## Testar antes de publicar
 
@@ -102,6 +115,7 @@ comentários `<!-- AD_SLOT_TOP -->` e `<!-- AD_SLOT_BOTTOM -->`, dentro da
 `<div class="ad-slot ...">`, em:
 - `index.html` (página inicial)
 - `games/sudoku/index.html` (dentro do jogo)
+- `games/damas/index.html` (dentro do jogo)
 
 Basta colar o código do Google dentro dessas divs, no lugar do comentário.
 O script principal do AdSense (o que carrega a biblioteca, começa com

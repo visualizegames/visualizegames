@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Damas | Visualize Games</title>
+<meta name="description" content="Jogue Damas grátis online contra o computador — regras brasileiras, captura obrigatória, dama voadora e três níveis de dificuldade." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%234f6fe0%22/><text x=%2216%22 y=%2222%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2214%22 fill=%22white%22 text-anchor=%22middle%22>VG</text></svg>" />
+<link rel="stylesheet" href="../../assets/base.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="topbar">
+  <a href="../../index.html" class="back-link">
+    <span class="back-mark">VG</span>
+    <span>Visualize Games</span>
+  </a>
+  <h1 class="game-title">Damas</h1>
+  <div class="topbar-spacer"></div>
+</header>
+
+<!-- Reserve de anúncio (topo) — ver README para ativar o Google AdSense -->
+<div class="ad-slot ad-slot-top" aria-hidden="true"><!-- AD_SLOT_TOP --></div>
+
+<main class="game-wrap">
+  <div class="difficulty-bar">
+    <span class="difficulty-label">Dificuldade da IA:</span>
+    <div class="difficulty-tabs" id="difficulty-tabs">
+      <button class="diff-btn" data-difficulty="facil">Fácil</button>
+      <button class="diff-btn" data-difficulty="normal">Normal</button>
+      <button class="diff-btn" data-difficulty="dificil">Difícil</button>
+    </div>
+  </div>
+
+  <div class="board-area">
+    <div class="board-container">
+      <div class="board" id="board"></div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="stat-card" id="turn-card">
+        <span class="stat-icon" id="turn-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="8" fill="currentColor"/>
+          </svg>
+        </span>
+        <div class="stat-info">
+          <span class="stat-value" id="turn-status">Sua vez</span>
+          <span class="stat-label" id="turn-hint">Escolha uma peça destacada</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card small">
+          <span class="stat-label">Suas peças</span>
+          <span class="stat-value" id="p1-count">12</span>
+        </div>
+        <div class="stat-card small">
+          <span class="stat-label">Peças da IA</span>
+          <span class="stat-value" id="p2-count">12</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card small">
+          <span class="stat-label">Vitórias</span>
+          <span class="stat-value" id="wins-count">0</span>
+        </div>
+        <div class="stat-card small">
+          <span class="stat-label">Tempo</span>
+          <span class="stat-value" id="timer">00:00</span>
+        </div>
+      </div>
+
+      <div class="tool-row damas-tools">
+        <button id="undo-btn" class="tool-btn" title="Desfazer">
+          <span class="tool-icon">↺</span>
+          <span class="tool-text">Desfazer</span>
+        </button>
+        <button id="hint-btn" class="tool-btn" title="Dica">
+          <span class="tool-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="tool-text">Dica <em id="hints-count">3</em></span>
+        </button>
+      </div>
+
+      <button id="new-game-btn" class="primary-btn">Novo jogo</button>
+    </aside>
+  </div>
+</main>
+
+<article class="game-info">
+  <p class="lead">Damas é um dos jogos de tabuleiro mais tradicionais do mundo, jogado há séculos em praticamente todas as culturas. Aqui você joga a variante brasileira, com captura obrigatória e dama voadora, contra um computador com três níveis de dificuldade. É um jogo simples de aprender, mas que recompensa quem pensa alguns lances à frente — um ótimo treino de raciocínio lógico e planejamento.</p>
+
+  <section>
+    <h2>Sobre o jogo de Damas</h2>
+    <p>Damas é jogado em um tabuleiro 8x8, usando apenas as casas escuras. Cada jogador começa com 12 peças, posicionadas nas três fileiras mais próximas dele. O objetivo é capturar todas as peças do adversário ou deixá-lo sem nenhum movimento possível.</p>
+  </section>
+
+  <section>
+    <h2>Como jogar Damas</h2>
+    <p>As peças se movem uma casa na diagonal, sempre para frente. Para capturar, sua peça pula por cima de uma peça adversária adjacente, caindo na casa vazia logo depois dela — na variante brasileira, a captura pode ser feita tanto para frente quanto para trás. Fique atento a estas regras:</p>
+    <ul>
+      <li>A captura é sempre obrigatória quando estiver disponível — não é permitido fazer um movimento simples se houver uma captura possível.</li>
+      <li>Quando existe mais de uma sequência de captura possível, é obrigatório escolher a que captura o maior número de peças (a regra da maioria).</li>
+      <li>Uma peça pode encadear várias capturas no mesmo lance — o turno só termina quando não houver mais nenhuma captura disponível para ela.</li>
+      <li>Ao chegar na última fileira do lado adversário, a peça vira dama e passa a se mover e capturar quantas casas quiser na diagonal (o "lance voador"), desde que o caminho esteja livre.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Dicas de Damas</h2>
+    <p>Damas parece simples à primeira vista, mas esconde bastante estratégia. Algumas dicas para jogar melhor:</p>
+    <ul>
+      <li><strong>Dica 1:</strong> Controle o centro do tabuleiro. Peças nas colunas centrais têm mais opções de movimento e são mais difíceis de imobilizar do que peças presas nas bordas.</li>
+      <li><strong>Dica 2:</strong> Evite avançar peças isoladas cedo demais. Uma peça sem outra peça apoiando por trás costuma virar alvo fácil de captura — sempre que possível, avance em grupo.</li>
+    </ul>
+  </section>
+</article>
+
+<!-- Reserve de anúncio (rodapé) -->
+<div class="ad-slot ad-slot-bottom" aria-hidden="true"><!-- AD_SLOT_BOTTOM --></div>
+
+<footer class="game-footer">
+  <p>Feito por Visualize Games &copy; <span id="footer-year"></span></p>
+</footer>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <h2 id="overlay-title"></h2>
+    <p id="overlay-text"></p>
+    <div id="overlay-actions" class="overlay-actions"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

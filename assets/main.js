@@ -15,10 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const totalGames = realCards().length;
   if (gameCountEl) {
-    gameCountEl.textContent = `${totalGames} jogo${totalGames === 1 ? "" : "s"} disponível${totalGames === 1 ? "" : "eis"}`;
+    const label = totalGames === 1 ? "jogo disponível" : "jogos disponíveis";
+    gameCountEl.textContent = `${totalGames} ${label}`;
   }
 
-  let activeCategory = "logica";
+  let activeCategory = "all";
 
   function applyFilters() {
     const query = (searchInput?.value || "").trim().toLowerCase();
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     realCards().forEach((card) => {
       const matchesQuery = !query || card.dataset.name.includes(query);
-      const matchesCategory = !activeCategory || card.dataset.category === activeCategory;
+      const matchesCategory = !activeCategory || activeCategory === "all" || card.dataset.category === activeCategory;
       const visible = matchesQuery && matchesCategory;
       card.style.display = visible ? "" : "none";
       if (visible) visibleCount++;
