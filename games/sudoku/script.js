@@ -178,6 +178,7 @@ const state = {
   gameOver: false,
   won: false,
   history: [],
+  completedUnits: null, // { rows: [bool*9], cols: [bool*9], boxes: [bool*9] }
 };
 
 const STORAGE_KEY = "sudoku_stats_v1";
@@ -291,6 +292,12 @@ function startNewGame(difficulty) {
     state.gameOver = false;
     state.won = false;
     state.history = [];
+    state.completedUnits = {
+      rows: Array(SIZE).fill(false),
+      cols: Array(SIZE).fill(false),
+      boxes: Array(SIZE).fill(false),
+    };
+    recomputeCompletedUnits();
 
     notesBtn.classList.remove("active");
     hideOverlay();
@@ -444,6 +451,7 @@ function undo() {
   state.notes = prev.notes;
   state.hinted = prev.hinted;
   state.errors = prev.errors;
+  recomputeCompletedUnits();
   renderBoard();
   renderSidebar();
   renderNumberPad();
@@ -457,6 +465,7 @@ function eraseSelected() {
   state.values[row][col] = 0;
   state.notes[row][col].clear();
   state.hinted[row][col] = false;
+  recomputeCompletedUnits();
   renderBoard();
   renderNumberPad();
 }
@@ -489,6 +498,7 @@ function inputNumber(n) {
     clearPeerNotes(row, col, n);
     renderBoard();
     renderNumberPad();
+    checkAndFlashCompletions(row, col);
     checkWin();
   } else {
     state.errors++;
@@ -521,6 +531,75 @@ function clearPeerNotes(row, col, n) {
   }
 }
 
+/* ============================================================
+   FLASH DE FILEIRA / COLUNA / GRADE 3x3 CONCLUÍDA
+   ============================================================ */
+
+function unitCellsForRow(r) {
+  return Array.from({ length: SIZE }, (_, c) => [r, c]);
+}
+function unitCellsForCol(c) {
+  return Array.from({ length: SIZE }, (_, r) => [r, c]);
+}
+function unitCellsForBox(boxIndex) {
+  const startRow = Math.floor(boxIndex / BOX) * BOX;
+  const startCol = (boxIndex % BOX) * BOX;
+  const cells = [];
+  for (let r = 0; r < BOX; r++) {
+    for (let c = 0; c < BOX; c++) cells.push([startRow + r, startCol + c]);
+  }
+  return cells;
+}
+
+function isUnitComplete(cells) {
+  // Só valores corretos ficam em state.values (o errado nunca é gravado ali),
+  // então "sem nenhuma célula vazia" já basta pra saber que a unidade está certa.
+  return cells.every(([r, c]) => state.values[r][c] !== 0);
+}
+
+/* Recalcula quais unidades já estão completas, sem disparar nenhum efeito
+   visual — usado depois de desfazer, apagar ou começar um jogo novo. */
+function recomputeCompletedUnits() {
+  for (let i = 0; i < SIZE; i++) {
+    state.completedUnits.rows[i] = isUnitComplete(unitCellsForRow(i));
+    state.completedUnits.cols[i] = isUnitComplete(unitCellsForCol(i));
+    state.completedUnits.boxes[i] = isUnitComplete(unitCellsForBox(i));
+  }
+}
+
+/* Verifica se a jogada em (row, col) acabou de completar a fileira, a
+   coluna e/ou a grade 3x3 correspondente, e dispara o flash se sim. */
+function checkAndFlashCompletions(row, col) {
+  const boxIndex = Math.floor(row / BOX) * BOX + Math.floor(col / BOX);
+  const newlyCompleted = [];
+
+  if (!state.completedUnits.rows[row] && isUnitComplete(unitCellsForRow(row))) {
+    state.completedUnits.rows[row] = true;
+    newlyCompleted.push(unitCellsForRow(row));
+  }
+  if (!state.completedUnits.cols[col] && isUnitComplete(unitCellsForCol(col))) {
+    state.completedUnits.cols[col] = true;
+    newlyCompleted.push(unitCellsForCol(col));
+  }
+  if (!state.completedUnits.boxes[boxIndex] && isUnitComplete(unitCellsForBox(boxIndex))) {
+    state.completedUnits.boxes[boxIndex] = true;
+    newlyCompleted.push(unitCellsForBox(boxIndex));
+  }
+
+  if (newlyCompleted.length > 0) {
+    const cellSet = new Set();
+    newlyCompleted.forEach((cells) => cells.forEach(([r, c]) => cellSet.add(`${r},${c}`)));
+    flashCells(Array.from(cellSet, (key) => key.split(",").map(Number)));
+  }
+}
+
+function flashCells(cells) {
+  cells.forEach(([r, c]) => getCellEl(r, c).classList.add("unit-complete"));
+  setTimeout(() => {
+    cells.forEach(([r, c]) => getCellEl(r, c).classList.remove("unit-complete"));
+  }, 650);
+}
+
 function useHint() {
   if (state.gameOver || state.won || state.paused || state.hintsLeft <= 0) return;
   let target = state.selected;
@@ -549,6 +628,7 @@ function useHint() {
   renderBoard();
   renderSidebar();
   renderNumberPad();
+  checkAndFlashCompletions(row, col);
   checkWin();
 }
 
@@ -684,6 +764,8 @@ document.addEventListener("keydown", (e) => {
   } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight") {
     moveSelection(e.key);
     e.preventDefault();
+  } else if ((e.key === "n" || e.key === "N") && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    toggleNotesMode();
   }
 });
 

@@ -38,6 +38,7 @@
   padding: 0;
   outline: none;
   font-family: inherit;
+  transition: background-color 0.2s ease;
 }
 
 .cell.border-right { border-right: 2px solid var(--line-strong); }
@@ -53,12 +54,18 @@
 .cell.wrong { background: #ffe0e1 !important; }
 .cell.wrong .cell-value { color: var(--wrong) !important; }
 
+/* Efeito rápido quando uma fileira, coluna ou grade 3x3 é concluída —
+   um flash e volta ao normal (sem sombra, sem elevação). */
+.cell.unit-complete { background: var(--blue) !important; }
+.cell.unit-complete .cell-value { color: #fff !important; }
+
 .cell-value {
   display: none;
   width: 100%;
   height: 100%;
   align-items: center;
   justify-content: center;
+  transition: color 0.2s ease;
 }
 
 .cell-notes {
@@ -102,6 +109,7 @@
 }
 
 .num-btn {
+  position: relative;
   background: var(--related);
   border: none;
   border-radius: 0;
@@ -113,7 +121,24 @@
   font-family: inherit;
 }
 .num-btn:hover { background: var(--same-value); }
-.num-btn.depleted { opacity: 0.35; }
+
+/* Número com as 9 ocorrências corretas já colocadas: fica esmaecido
+   e ganha uma marca de concluído (✓) no canto. */
+.num-btn.depleted {
+  background: var(--bg);
+  color: var(--text-soft);
+}
+.num-btn.depleted::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid var(--success);
+  border-bottom: 2px solid var(--success);
+  transform: rotate(40deg);
+}
 
 /* --selected precisa de uma variável própria (não está na base) */
 :root { --selected: #bcd2ff; }
