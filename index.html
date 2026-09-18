@@ -3,159 +3,162 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Visualize Games — Jogos de tabuleiro grátis</title>
-<meta name="description" content="Visualize Games — jogos de tabuleiro gratuitos para jogar direto no navegador, sem instalar nada." />
+<title>Sudoku | Visualize Games</title>
+<meta name="description" content="Jogue Sudoku grátis online — seis níveis de dificuldade, dicas, anotações e cronômetro." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%234f6fe0%22/><text x=%2216%22 y=%2222%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2214%22 fill=%22white%22 text-anchor=%22middle%22>VG</text></svg>" />
-<link rel="stylesheet" href="assets/main.css" />
+<link rel="stylesheet" href="../../assets/base.css" />
+<link rel="stylesheet" href="style.css" />
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7370452660840754"
+     crossorigin="anonymous"></script>
 </head>
 <body>
-
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">VG</span>
-      <span class="brand-name">Visualize Games</span>
-    </a>
-    <label class="search-wrap">
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/>
-        <path d="m20 20-3.8-3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-      </svg>
-      <input id="search-input" type="search" placeholder="Buscar jogos de tabuleiro..." autocomplete="off" />
-    </label>
-  </div>
+<header class="topbar">
+  <a href="../../index.html" class="back-link">
+    <span class="back-mark">VG</span>
+    <span>Visualize Games</span>
+  </a>
+  <h1 class="game-title">Sudoku</h1>
+  <div class="topbar-spacer"></div>
 </header>
 
-<nav class="category-row" aria-label="Categorias">
-  <button class="chip active" data-category="all" type="button">
-    <span class="chip-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="1.7"/>
-        <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="1.7"/>
-        <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="1.7"/>
-        <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="1.7"/>
-      </svg>
-    </span>
-    <span>Todos</span>
-  </button>
+<!-- Reserve de anúncio (topo) — ver README para ativar o Google AdSense -->
+<div class="ad-slot ad-slot-top" aria-hidden="true"><!-- AD_SLOT_TOP --></div>
 
-  <button class="chip" data-category="logica" type="button">
-    <span class="chip-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="3" width="18" height="18" rx="2.5" stroke="currentColor" stroke-width="1.7"/>
-        <path d="M9 3v18M15 3v18M3 9h18M3 15h18" stroke="currentColor" stroke-width="1.3" opacity="0.6"/>
-      </svg>
-    </span>
-    <span>Lógica</span>
-  </button>
-
-  <button class="chip" data-category="damas" type="button">
-    <span class="chip-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.7"/>
-        <circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="1.4" opacity="0.7"/>
-      </svg>
-    </span>
-    <span>Damas</span>
-  </button>
-
-  <span class="chip disabled" title="Em breve">
-    <span class="chip-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="12" cy="8.5" r="3" stroke="currentColor" stroke-width="1.7"/>
-        <path d="M9 20h6M8 20c0-3 1-5 1-6.5h6c0 1.5 1 3.5 1 6.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </span>
-    <span>Xadrez</span>
-    <em>em breve</em>
-  </span>
-
-  <span class="chip disabled" title="Em breve">
-    <span class="chip-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3.5" y="5" width="11" height="15" rx="1.8" transform="rotate(-8 9 12.5)" stroke="currentColor" stroke-width="1.5"/>
-        <rect x="9.5" y="5" width="11" height="15" rx="1.8" transform="rotate(8 15 12.5)" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-    </span>
-    <span>Cartas</span>
-    <em>em breve</em>
-  </span>
-
-  <span class="chip disabled" title="Em breve">
-    <span class="chip-icon">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.7"/>
-        <text x="12" y="16.5" font-family="Arial" font-weight="700" font-size="10" fill="currentColor" text-anchor="middle">A</text>
-      </svg>
-    </span>
-    <span>Palavras</span>
-    <em>em breve</em>
-  </span>
-</nav>
-
-<main>
-  <section class="hero">
-    <a class="hero-card" href="games/sudoku/index.html" style="background-image:url('assets/images/sudoku-board.png')">
-      <div class="hero-overlay">
-        <span class="hero-tag">Puzzle · Lógica</span>
-        <h1>Sudoku</h1>
-        <p>Seis níveis de dificuldade, dicas, anotações e cronômetro. Jogue direto no navegador, sem instalar nada.</p>
-        <span class="hero-cta">Jogar agora <span aria-hidden="true">→</span></span>
-      </div>
-    </a>
-  </section>
-
-  <div class="ad-slot ad-slot-top" aria-hidden="true">
-    <span class="ad-label">Publicidade</span>
-    <!-- AD_SLOT_TOP — ver README para ativar o Google AdSense -->
+<main class="game-wrap">
+  <div class="difficulty-bar">
+    <span class="difficulty-label">Dificuldade:</span>
+    <div class="difficulty-tabs" id="difficulty-tabs">
+      <button class="diff-btn" data-difficulty="facil">Fácil</button>
+      <button class="diff-btn" data-difficulty="media">Média</button>
+      <button class="diff-btn" data-difficulty="dificil">Difícil</button>
+      <button class="diff-btn" data-difficulty="especialista">Especialista</button>
+      <button class="diff-btn" data-difficulty="mestra">Mestra</button>
+      <button class="diff-btn" data-difficulty="extrema">Extrema</button>
+    </div>
   </div>
 
-  <section class="game-section">
-    <div class="section-heading">
-      <h2>Todos os jogos</h2>
-      <span class="section-count" id="game-count"></span>
-    </div>
-
-    <div class="game-grid" id="game-grid">
-      <a class="game-card" data-name="sudoku" data-category="logica" href="games/sudoku/index.html" style="background-image:url('assets/images/sudoku-board.png')">
-        <div class="game-card-overlay">
-          <span class="game-tag">Lógica</span>
-          <h3>Sudoku</h3>
-        </div>
-      </a>
-
-      <a class="game-card" data-name="damas" data-category="damas" href="games/damas/index.html" style="background-image:url('assets/images/damas-board.png')">
-        <div class="game-card-overlay">
-          <span class="game-tag">Estratégia</span>
-          <h3>Damas</h3>
-        </div>
-      </a>
-
-      <div class="game-card placeholder">
-        <div class="placeholder-inner">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-          <span>Em breve</span>
-        </div>
+  <div class="board-area">
+    <div class="board-container">
+      <div class="board" id="board"></div>
+      <div class="pause-overlay" id="pause-overlay">
+        <span>⏸ Pausado</span>
+        <small>Clique para continuar</small>
       </div>
     </div>
 
-    <p class="empty-state" id="empty-state" hidden>
-      Nenhum jogo encontrado. Já temos <strong>Sudoku</strong> e <strong>Damas</strong> disponíveis — mais jogos de tabuleiro chegando em breve.
-    </p>
-  </section>
+    <aside class="sidebar">
+      <div class="stat-card">
+        <span class="stat-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 4h10v4a5 5 0 0 1-5 5 5 5 0 0 1-5-5V4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M7 5H4a1 1 0 0 0-1 1v1a3 3 0 0 0 3 3M17 5h3a1 1 0 0 1 1 1v1a3 3 0 0 1-3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M12 13v3m-3 3h6m-5 0 .5-3h3l.5 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <div class="stat-info">
+          <span class="stat-value" id="resolved-count">0</span>
+          <span class="stat-label">Resolvidos</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card small">
+          <span class="stat-label">Erros</span>
+          <span class="stat-value" id="errors-count">0/3</span>
+        </div>
+        <div class="stat-card small">
+          <span class="stat-label">Tempo</span>
+          <div class="timer-row">
+            <span class="stat-value" id="timer">00:00</span>
+            <button id="pause-btn" class="icon-btn" title="Pausar">⏸</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button id="undo-btn" class="tool-btn" title="Desfazer">
+          <span class="tool-icon">↺</span>
+          <span class="tool-text">Desfazer</span>
+        </button>
+        <button id="erase-btn" class="tool-btn" title="Apagar">
+          <span class="tool-icon">⌫</span>
+          <span class="tool-text">Apagar</span>
+        </button>
+        <button id="notes-btn" class="tool-btn" title="Anotações (atalho: N)">
+          <span class="tool-icon">✎</span>
+          <span class="tool-text">Notas <em>(N)</em></span>
+        </button>
+        <button id="hint-btn" class="tool-btn" title="Dica">
+          <span class="tool-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="tool-text">Dica <em id="hints-count">3</em></span>
+        </button>
+      </div>
+
+      <div class="number-pad" id="number-pad">
+        <button class="num-btn" data-number="1">1</button>
+        <button class="num-btn" data-number="2">2</button>
+        <button class="num-btn" data-number="3">3</button>
+        <button class="num-btn" data-number="4">4</button>
+        <button class="num-btn" data-number="5">5</button>
+        <button class="num-btn" data-number="6">6</button>
+        <button class="num-btn" data-number="7">7</button>
+        <button class="num-btn" data-number="8">8</button>
+        <button class="num-btn" data-number="9">9</button>
+      </div>
+
+      <button id="new-game-btn" class="primary-btn">Novo jogo</button>
+    </aside>
+  </div>
 </main>
 
-<div class="ad-slot ad-slot-bottom" aria-hidden="true">
-  <span class="ad-label">Publicidade</span>
-  <!-- AD_SLOT_BOTTOM -->
-</div>
+<article class="game-info">
+  <p class="lead">Sudoku é um dos jogos mais populares de todos os tempos. O objetivo dele é preencher uma grade 9x9 com números, de modo que cada fileira, coluna e grade 3x3 contenham todos os dígitos entre 1 e 9. Como é um quebra-cabeças de lógica, o Sudoku também é excelente para o cérebro. Se você o joga diariamente, logo começará a notar melhoras em sua concentração e nas funções gerais do cérebro. Comece um jogo agora. Dentro de pouco tempo, o Sudoku se tornará seu jogo online gratuito favorito.</p>
 
-<footer class="hub-footer">
-  <p>Feito por Visualize Games &copy; <span id="year"></span></p>
+  <section>
+    <h2>Sobre o Sudoku</h2>
+    <p>Sudoku, o popular jogo japonês, é baseado na lógica de posicionamento de números. Ele é um jogo de lógica online e não exige nenhum cálculo ou habilidade matemática especial; é necessário apenas usar o cérebro e a concentração.</p>
+  </section>
+
+  <section>
+    <h2>Como jogar Sudoku</h2>
+    <p>O objetivo do Sudoku é preencher uma grade 9x9 com números, de modo que cada fileira, coluna e grade 3x3 contenham todos os dígitos entre 1 e 9. No início do jogo, a grade 9x9 terá alguns quadrados preenchidos. Seu trabalho é usar a lógica para preencher os dígitos que faltam e completar a grade. Não se esqueça de que um movimento é incorreto quando:</p>
+    <ul>
+      <li>Qualquer fileira contenha o mesmo número de 1 a 9 mais de uma vez</li>
+      <li>Qualquer coluna contenha o mesmo número de 1 a 9 mais de uma vez</li>
+      <li>Qualquer grade 3x3 contenha o mesmo número de 1 a 9 mais de uma vez</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Dicas de Sudoku</h2>
+    <p>Sudoku se torna um jogo divertido depois que você pega o jeito. Mas, ao mesmo tempo, aprender a jogá-lo pode ser um pouco intimidador para os iniciantes. Então, se você for iniciante, aqui vão algumas dicas de Sudoku que podem ser usadas para melhorar suas habilidades no jogo.</p>
+    <ul>
+      <li><strong>Dica 1:</strong> Procure fileiras, colunas ou grades 3x3 que contenham mais de 5 números. Trabalhe nas células vazias, testando os números que ainda não foram usados. Em muitos casos, você encontrará números que só podem ser usados em uma posição, considerando os outros que já estão em suas fileiras, colunas e grades 3x3.</li>
+      <li><strong>Dica 2:</strong> Separe a grade visualmente em 3 colunas e 3 fileiras. Cada coluna grande terá 3 grades 3x3 e cada fileira terá 3 grades 3x3. Agora, procure colunas ou grades que contenham 2 números iguais. Logicamente, deve haver um terceiro número igual na única seção de 9 células restante. Observe para cada uma das 9 posições restantes e veja se você consegue encontrar a localização do número que falta.</li>
+    </ul>
+  </section>
+</article>
+
+<!-- Reserve de anúncio (rodapé) -->
+<div class="ad-slot ad-slot-bottom" aria-hidden="true"><!-- AD_SLOT_BOTTOM --></div>
+
+<footer class="game-footer">
+  <p>Feito por Visualize Games &copy; <span id="footer-year"></span></p>
 </footer>
 
-<script src="assets/main.js"></script>
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <h2 id="overlay-title"></h2>
+    <p id="overlay-text"></p>
+    <div id="overlay-actions" class="overlay-actions"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
