@@ -764,7 +764,7 @@ document.addEventListener("keydown", (e) => {
   } else if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight") {
     moveSelection(e.key);
     e.preventDefault();
-  } else if ((e.key === "n" || e.key === "N") && !e.ctrlKey && !e.metaKey && !e.altKey) {
+  } else if ((e.key === "a" || e.key === "A") && !e.ctrlKey && !e.metaKey && !e.altKey) {
     toggleNotesMode();
   }
 });
