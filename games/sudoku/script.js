@@ -594,10 +594,29 @@ function checkAndFlashCompletions(row, col) {
 }
 
 function flashCells(cells) {
-  cells.forEach(([r, c]) => getCellEl(r, c).classList.add("unit-complete"));
+  const STAGGER_MS = 55; // intervalo entre um quadradinho e o próximo na onda
+  const ANIM_MS = 520; // precisa bater com a duração de cell-wave/cell-value-wave no CSS
+
+  cells.forEach(([r, c], i) => {
+    const cellEl = getCellEl(r, c);
+    const valueEl = cellEl.querySelector(".cell-value");
+    const delay = `${i * STAGGER_MS}ms`;
+    cellEl.style.animationDelay = delay;
+    if (valueEl) valueEl.style.animationDelay = delay;
+    cellEl.classList.add("unit-complete");
+  });
+
+  // só some depois que a onda inteira (a última célula incluída) tiver terminado
+  const totalDuration = (cells.length - 1) * STAGGER_MS + ANIM_MS + 100;
   setTimeout(() => {
-    cells.forEach(([r, c]) => getCellEl(r, c).classList.remove("unit-complete"));
-  }, 650);
+    cells.forEach(([r, c]) => {
+      const cellEl = getCellEl(r, c);
+      const valueEl = cellEl.querySelector(".cell-value");
+      cellEl.classList.remove("unit-complete");
+      cellEl.style.animationDelay = "";
+      if (valueEl) valueEl.style.animationDelay = "";
+    });
+  }, totalDuration);
 }
 
 function useHint() {

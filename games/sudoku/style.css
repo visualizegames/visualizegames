@@ -48,16 +48,35 @@
 .cell.same-value { background: var(--same-value); }
 .cell.selected { background: var(--selected); }
 
-.cell.given .cell-value { color: var(--given); font-weight: 700; }
-.cell:not(.given) .cell-value { color: var(--blue-dark); font-weight: 600; }
-.cell.hinted .cell-value { color: var(--success); font-weight: 700; }
+.cell.given .cell-value { --cell-color: var(--given); color: var(--cell-color); font-weight: 700; }
+.cell:not(.given) .cell-value { --cell-color: var(--blue-dark); color: var(--cell-color); font-weight: 600; }
+.cell.hinted .cell-value { --cell-color: var(--success); color: var(--cell-color); font-weight: 700; }
 .cell.wrong { background: #ffe0e1 !important; }
 .cell.wrong .cell-value { color: var(--wrong) !important; }
 
-/* Efeito rápido quando uma fileira, coluna ou grade 3x3 é concluída —
-   um flash e volta ao normal (sem sombra, sem elevação). */
-.cell.unit-complete { background: var(--blue) !important; }
-.cell.unit-complete .cell-value { color: #fff !important; }
+/* Efeito de onda quando uma fileira, coluna ou grade 3x3 é concluída:
+   cada quadradinho -- em sequência, um depois do outro, não todos de
+   uma vez -- pisca de azul com o número em branco e sobe com uma leve
+   ampliação, depois volta ao normal (só transform e cor, sem sombra,
+   pra não fugir do padrão quadrado e formal do site). O atraso entre
+   um quadradinho e o próximo é aplicado via JS, em flashCells. */
+@keyframes cell-wave {
+  0%, 100% { transform: translateY(0) scale(1); background: var(--card); }
+  50% { transform: translateY(-9px) scale(1.06); background: var(--blue); }
+}
+@keyframes cell-value-wave {
+  0%, 100% { color: var(--cell-color); }
+  50% { color: #fff; }
+}
+
+.cell.unit-complete {
+  position: relative;
+  z-index: 2;
+  animation: cell-wave 0.52s ease-in-out;
+}
+.cell.unit-complete .cell-value {
+  animation: cell-value-wave 0.52s ease-in-out;
+}
 
 .cell-value {
   display: none;
