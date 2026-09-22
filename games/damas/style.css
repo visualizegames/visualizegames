@@ -11,6 +11,23 @@
 
 .damas-tools { grid-template-columns: repeat(2, 1fr); }
 
+.variant-blurb {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: -10px 0 18px;
+  max-width: 640px;
+}
+
+/* Subtítulos por variante dentro de "Como jogar Damas" */
+.game-info h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--blue-dark);
+  margin: 18px 0 6px;
+}
+.game-info h3:first-of-type { margin-top: 6px; }
+
 .board-area {
   display: flex;
   gap: 28px;
@@ -46,7 +63,7 @@
 
 .square.light { background: var(--card); cursor: default; }
 .square.dark { background: var(--dark-square); cursor: default; }
-.square.dark.playable { cursor: pointer; }
+.square.playable { cursor: pointer; }
 
 .square.selected { outline: 3px solid var(--blue); outline-offset: -3px; }
 .square.legal-move { outline: 3px solid var(--success); outline-offset: -3px; }
@@ -55,6 +72,7 @@
   position: absolute;
   inset: -4px;
   border: 2px dashed var(--success);
+  border-radius: 50%;
 }
 .square.hint-cell { outline: 3px solid #e0a72a; outline-offset: -3px; }
 
@@ -64,6 +82,7 @@
   height: 62%;
   background: var(--p1);
   border: 2px solid var(--p1-dark);
+  border-radius: 50%;
 }
 .piece.p2 { background: var(--p2); border-color: var(--p2-dark); }
 

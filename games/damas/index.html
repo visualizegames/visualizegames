@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Damas | Visualize Games</title>
-<meta name="description" content="Jogue Damas grátis online contra o computador — regras brasileiras, captura obrigatória, dama voadora e três níveis de dificuldade." />
+<meta name="description" content="Jogue Damas grátis online contra o computador — 5 variantes de regras (Brasileira, Inglesa, Russa, Italiana e Turca) e três níveis de dificuldade." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 fill=%22%234f6fe0%22/><text x=%2216%22 y=%2222%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2214%22 fill=%22white%22 text-anchor=%22middle%22>VG</text></svg>" />
 <link rel="stylesheet" href="../../assets/base.css" />
 <link rel="stylesheet" href="style.css" />
@@ -26,6 +26,18 @@
 <div class="ad-slot ad-slot-top" aria-hidden="true"><!-- AD_SLOT_TOP --></div>
 
 <main class="game-wrap">
+  <div class="difficulty-bar">
+    <span class="difficulty-label">Regras:</span>
+    <div class="difficulty-tabs" id="variant-tabs">
+      <button class="diff-btn" data-variant="brasileira">Brasileira</button>
+      <button class="diff-btn" data-variant="inglesa">Inglesa</button>
+      <button class="diff-btn" data-variant="russa">Russa</button>
+      <button class="diff-btn" data-variant="italiana">Italiana</button>
+      <button class="diff-btn" data-variant="turca">Turca</button>
+    </div>
+  </div>
+  <p class="variant-blurb" id="variant-blurb"></p>
+
   <div class="difficulty-bar">
     <span class="difficulty-label">Dificuldade da IA:</span>
     <div class="difficulty-tabs" id="difficulty-tabs">
@@ -96,30 +108,34 @@
 </main>
 
 <article class="game-info">
-  <p class="lead">Damas é um dos jogos de tabuleiro mais tradicionais do mundo, jogado há séculos em praticamente todas as culturas. Aqui você joga a variante brasileira, com captura obrigatória e dama voadora, contra um computador com três níveis de dificuldade. É um jogo simples de aprender, mas que recompensa quem pensa alguns lances à frente — um ótimo treino de raciocínio lógico e planejamento.</p>
+  <p class="lead">Damas é um dos jogos de tabuleiro mais tradicionais do mundo, jogado há séculos em praticamente todas as culturas — e cada região desenvolveu suas próprias regras pelo caminho. Aqui você escolhe entre cinco variantes (Brasileira, Inglesa, Russa, Italiana e Turca) e joga contra um computador com três níveis de dificuldade. É um jogo simples de aprender, mas que recompensa quem pensa alguns lances à frente — um ótimo treino de raciocínio lógico e planejamento.</p>
 
   <section>
     <h2>Sobre o jogo de Damas</h2>
-    <p>Damas é jogado em um tabuleiro 8x8, usando apenas as casas escuras. Cada jogador começa com 12 peças, posicionadas nas três fileiras mais próximas dele. O objetivo é capturar todas as peças do adversário ou deixá-lo sem nenhum movimento possível.</p>
+    <p>Damas é jogado em um tabuleiro 8x8. Na Brasileira, Inglesa, Russa e Italiana, cada jogador começa com 12 peças nas casas escuras das três fileiras mais próximas dele, e o movimento e a captura acontecem na diagonal. Já a variante Turca foge desse padrão: usa 16 peças por jogador, dispostas em duas fileiras cheias (todas as casas, não só as escuras), e tanto o movimento quanto a captura são em linha reta — para frente ou para os lados, nunca na diagonal. Em todas as variantes, o objetivo é o mesmo: capturar todas as peças do adversário ou deixá-lo sem nenhum movimento possível.</p>
   </section>
 
   <section>
     <h2>Como jogar Damas</h2>
-    <p>As peças se movem uma casa na diagonal, sempre para frente. Para capturar, sua peça pula por cima de uma peça adversária adjacente, caindo na casa vazia logo depois dela — na variante brasileira, a captura pode ser feita tanto para frente quanto para trás. Fique atento a estas regras:</p>
-    <ul>
-      <li>A captura é sempre obrigatória quando estiver disponível — não é permitido fazer um movimento simples se houver uma captura possível.</li>
-      <li>Quando existe mais de uma sequência de captura possível, é obrigatório escolher a que captura o maior número de peças (a regra da maioria).</li>
-      <li>Uma peça pode encadear várias capturas no mesmo lance — o turno só termina quando não houver mais nenhuma captura disponível para ela.</li>
-      <li>Ao chegar na última fileira do lado adversário, a peça vira dama e passa a se mover e capturar quantas casas quiser na diagonal (o "lance voador"), desde que o caminho esteja livre.</li>
-    </ul>
+    <p>Em todas as variantes a captura é sempre obrigatória quando está disponível — não é permitido fazer um movimento simples se houver uma peça podendo capturar. Uma peça também pode encadear várias capturas no mesmo lance, continuando enquanto houver mais alguma disponível para ela. Só que os detalhes de como o peão e a dama se movem, capturam e são promovidos mudam bastante de uma variante para outra:</p>
+    <h3>Brasileira</h3>
+    <p>O peão captura em qualquer diagonal, inclusive para trás. Quando há mais de uma sequência de captura possível, é obrigatório escolher a que captura o maior número de peças. A dama, uma vez promovida, voa quantas casas quiser na diagonal. Um detalhe sutil: um peão só vira dama se o lance parar exatamente na última fileira — se ele só passar por ali no meio de uma captura mais longa, continua peão.</p>
+    <h3>Inglesa / Americana</h3>
+    <p>O peão só captura para frente. A dama não voa: anda e captura uma casa por vez, em qualquer direção da diagonal. A captura é obrigatória, mas — diferente da Brasileira — você pode escolher livremente qual sequência fazer, mesmo que não seja a mais longa disponível.</p>
+    <h3>Russa</h3>
+    <p>O peão captura em qualquer diagonal, como na Brasileira, e você também pode escolher livremente a sequência de captura. A marca registrada dessa variante: se um peão chega na última fileira no meio de uma sequência de capturas, ele vira dama imediatamente e continua capturando no mesmo lance já como dama voadora.</p>
+    <h3>Italiana</h3>
+    <p>O peão só captura para frente e nunca pode capturar uma dama adversária — só outra dama consegue fazer isso. A captura é obrigatória com o maior número de peças e, em caso de empate, a regra manda priorizar a sequência que captura uma dama e, ainda empatado, a que usa uma dama própria para capturar.</p>
+    <h3>Turca</h3>
+    <p>Nada de diagonal: as peças andam e capturam em linha reta, para frente ou para os lados (nunca para trás, nunca na diagonal). Ao chegar na última fileira, o peão vira dama e passa a se mover como uma torre do xadrez, quantas casas quiser em qualquer direção ortogonal. Com 16 peças por jogador, a captura também é obrigatória com a maior sequência possível.</p>
   </section>
 
   <section>
     <h2>Dicas de Damas</h2>
-    <p>Damas parece simples à primeira vista, mas esconde bastante estratégia. Algumas dicas para jogar melhor:</p>
+    <p>Damas parece simples à primeira vista, mas esconde bastante estratégia — e as ideias abaixo valem para qualquer uma das cinco variantes:</p>
     <ul>
       <li><strong>Dica 1:</strong> Controle o centro do tabuleiro. Peças nas colunas centrais têm mais opções de movimento e são mais difíceis de imobilizar do que peças presas nas bordas.</li>
-      <li><strong>Dica 2:</strong> Evite avançar peças isoladas cedo demais. Uma peça sem outra peça apoiando por trás costuma virar alvo fácil de captura — sempre que possível, avance em grupo.</li>
+      <li><strong>Dica 2:</strong> Evite avançar peças isoladas cedo demais. Uma peça sem outra apoiando por perto costuma virar alvo fácil de captura — sempre que possível, avance em grupo.</li>
     </ul>
   </section>
 </article>

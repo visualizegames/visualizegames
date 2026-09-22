@@ -1,52 +1,191 @@
 /* ============================================================
-   DAMAS (regras brasileiras) — motor do jogo + IA + interface
+   DAMAS — motor do jogo (5 variantes de regras) + IA + interface
    ============================================================ */
 
 const SIZE = 8;
-const DIAGONALS = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
 
 function isDark(r, c) { return (r + c) % 2 === 1; }
 function emptyBoard() { return Array.from({ length: SIZE }, () => Array(SIZE).fill(null)); }
-
-function initialBoard() {
-  const b = emptyBoard();
-  for (let r = 0; r < 3; r++) for (let c = 0; c < SIZE; c++) if (isDark(r, c)) b[r][c] = { player: 2, king: false };
-  for (let r = 5; r < 8; r++) for (let c = 0; c < SIZE; c++) if (isDark(r, c)) b[r][c] = { player: 1, king: false };
-  return b;
-}
-
 function cloneBoard(b) { return b.map((row) => row.map((cell) => (cell ? { ...cell } : null))); }
 function inBounds(r, c) { return r >= 0 && r < SIZE && c >= 0 && c < SIZE; }
 function opponentOf(p) { return p === 1 ? 2 : 1; }
-function isPromotionRow(player, row) { return player === 1 ? row === 0 : row === 7; }
-function manForwardDirs(player) { return player === 1 ? [[-1, -1], [-1, 1]] : [[1, -1], [1, 1]]; }
+function isPromotionRow(player, row) { return player === 1 ? row === 0 : row === SIZE - 1; }
 
-function getSingleCaptures(board, r, c) {
-  const piece = board[r][c];
+/* ---------------- Direções de movimento/captura ---------------- */
+
+const DIR = {
+  diagFwdP1: [[-1, -1], [-1, 1]],
+  diagFwdP2: [[1, -1], [1, 1]],
+  diagAll: [[-1, -1], [-1, 1], [1, -1], [1, 1]],
+  orthoFwdSideP1: [[-1, 0], [0, -1], [0, 1]],
+  orthoFwdSideP2: [[1, 0], [0, -1], [0, 1]],
+  orthoAll: [[-1, 0], [1, 0], [0, -1], [0, 1]],
+};
+
+function moveDirsFor(rules, player) { return player === 1 ? rules.moveDirsP1 : rules.moveDirsP2; }
+function captureDirsFor(rules, player) { return player === 1 ? rules.captureDirsP1 : rules.captureDirsP2; }
+
+/* ---------------- Variantes de regras ----------------
+   Cada variante descreve, de forma declarativa: quantas casas usa,
+   pra onde peão anda/captura, se a dama voa ou anda casa a casa,
+   se a captura precisa ser sempre a de maior número de peças, se
+   peão pode capturar dama, o critério de desempate quando há mais
+   de uma captura máxima, e o que acontece quando um peão pisa na
+   última linha no meio de uma sequência de capturas. */
+
+const VARIANTS = {
+  brasileira: {
+    id: "brasileira",
+    name: "Brasileira",
+    fullName: "Damas Brasileira",
+    blurb: "Peão captura em qualquer diagonal (pra frente ou pra trás) e a dama voa quantas casas quiser. Captura obrigatória, sempre a de maior número de peças. Um peão só vira dama se o lance parar na última linha — se ele só passar por ali no meio de uma captura, continua peão.",
+    allSquares: false,
+    startRowsP1: [5, 6, 7],
+    startRowsP2: [0, 1, 2],
+    moveDirsP1: DIR.diagFwdP1,
+    moveDirsP2: DIR.diagFwdP2,
+    captureDirsP1: DIR.diagAll,
+    captureDirsP2: DIR.diagAll,
+    kingDirs: DIR.diagAll,
+    kingFlying: true,
+    maxCaptureRequired: true,
+    manCanCaptureKing: true,
+    captureTieBreak: "count",
+    promotionMode: "brazilian",
+  },
+  inglesa: {
+    id: "inglesa",
+    name: "Inglesa",
+    fullName: "Damas Inglesa / Americana",
+    blurb: "Peão só captura pra frente. A dama não voa — anda uma casa por vez, pra qualquer lado da diagonal. A captura é obrigatória, mas você escolhe livremente qual sequência fazer, mesmo que não seja a maior.",
+    allSquares: false,
+    startRowsP1: [5, 6, 7],
+    startRowsP2: [0, 1, 2],
+    moveDirsP1: DIR.diagFwdP1,
+    moveDirsP2: DIR.diagFwdP2,
+    captureDirsP1: DIR.diagFwdP1,
+    captureDirsP2: DIR.diagFwdP2,
+    kingDirs: DIR.diagAll,
+    kingFlying: false,
+    maxCaptureRequired: false,
+    manCanCaptureKing: true,
+    captureTieBreak: "count",
+    promotionMode: "always-stop",
+  },
+  russa: {
+    id: "russa",
+    name: "Russa",
+    fullName: "Damas Russa",
+    blurb: "Peão captura em qualquer diagonal. Se ele chegar na última linha no meio de uma sequência de capturas, vira dama na hora e continua a mesma jogada já voando. Você escolhe livremente a sequência, não precisa ser a maior.",
+    allSquares: false,
+    startRowsP1: [5, 6, 7],
+    startRowsP2: [0, 1, 2],
+    moveDirsP1: DIR.diagFwdP1,
+    moveDirsP2: DIR.diagFwdP2,
+    captureDirsP1: DIR.diagAll,
+    captureDirsP2: DIR.diagAll,
+    kingDirs: DIR.diagAll,
+    kingFlying: true,
+    maxCaptureRequired: false,
+    manCanCaptureKing: true,
+    captureTieBreak: "count",
+    promotionMode: "russian",
+  },
+  italiana: {
+    id: "italiana",
+    name: "Italiana",
+    fullName: "Damas Italiana",
+    blurb: "Peão só captura pra frente e nunca pode capturar uma dama — só outra dama pode. Captura obrigatória com o maior número de peças; empatando, tem que priorizar a sequência que captura (ou usa) uma dama.",
+    allSquares: false,
+    startRowsP1: [5, 6, 7],
+    startRowsP2: [0, 1, 2],
+    moveDirsP1: DIR.diagFwdP1,
+    moveDirsP2: DIR.diagFwdP2,
+    captureDirsP1: DIR.diagFwdP1,
+    captureDirsP2: DIR.diagFwdP2,
+    kingDirs: DIR.diagAll,
+    kingFlying: false,
+    maxCaptureRequired: true,
+    manCanCaptureKing: false,
+    captureTieBreak: "italian",
+    promotionMode: "always-stop",
+  },
+  turca: {
+    id: "turca",
+    name: "Turca",
+    fullName: "Damas Turca",
+    blurb: "Nada de diagonal aqui: as peças andam em linha reta, pra frente ou pros lados, e capturam do mesmo jeito. A dama anda como uma torre do xadrez, em qualquer direção. 16 peças por jogador, captura obrigatória com a maior sequência.",
+    allSquares: true,
+    startRowsP1: [5, 6],
+    startRowsP2: [1, 2],
+    moveDirsP1: DIR.orthoFwdSideP1,
+    moveDirsP2: DIR.orthoFwdSideP2,
+    captureDirsP1: DIR.orthoFwdSideP1,
+    captureDirsP2: DIR.orthoFwdSideP2,
+    kingDirs: DIR.orthoAll,
+    kingFlying: true,
+    maxCaptureRequired: true,
+    manCanCaptureKing: true,
+    captureTieBreak: "count",
+    promotionMode: "always-stop",
+  },
+};
+const VARIANT_ORDER = ["brasileira", "inglesa", "russa", "italiana", "turca"];
+
+/* ---------------- Tabuleiro inicial ---------------- */
+
+function initialBoard(rules) {
+  const b = emptyBoard();
+  const place = (rows, player) => {
+    for (const r of rows) {
+      for (let c = 0; c < SIZE; c++) {
+        if (rules.allSquares || isDark(r, c)) b[r][c] = { player, king: false };
+      }
+    }
+  };
+  place(rules.startRowsP2, 2);
+  place(rules.startRowsP1, 1);
+  return b;
+}
+
+/* ---------------- Geração de jogadas ---------------- */
+
+function getSingleCapturesForPiece(board, r, c, player, isKing, rules) {
   const results = [];
-  if (!piece) return results;
-
-  if (piece.king) {
-    for (const [dr, dc] of DIAGONALS) {
-      let cr = r + dr, cc = c + dc;
-      while (inBounds(cr, cc) && board[cr][cc] === null) { cr += dr; cc += dc; }
-      if (!inBounds(cr, cc)) continue;
-      const occ = board[cr][cc];
-      if (occ && occ.player !== piece.player) {
-        let lr = cr + dr, lc = cc + dc;
-        while (inBounds(lr, lc) && board[lr][lc] === null) {
-          results.push({ landR: lr, landC: lc, capR: cr, capC: cc });
-          lr += dr; lc += dc;
+  if (isKing) {
+    const dirs = rules.kingDirs;
+    if (rules.kingFlying) {
+      for (const [dr, dc] of dirs) {
+        let cr = r + dr, cc = c + dc;
+        while (inBounds(cr, cc) && board[cr][cc] === null) { cr += dr; cc += dc; }
+        if (!inBounds(cr, cc)) continue;
+        const occ = board[cr][cc];
+        if (occ && occ.player !== player) {
+          let lr = cr + dr, lc = cc + dc;
+          while (inBounds(lr, lc) && board[lr][lc] === null) {
+            results.push({ landR: lr, landC: lc, capR: cr, capC: cc });
+            lr += dr; lc += dc;
+          }
+        }
+      }
+    } else {
+      for (const [dr, dc] of dirs) {
+        const mr = r + dr, mc = c + dc, lr = r + 2 * dr, lc = c + 2 * dc;
+        if (!inBounds(lr, lc)) continue;
+        const mid = inBounds(mr, mc) ? board[mr][mc] : undefined;
+        if (mid && mid.player !== player && board[lr][lc] === null) {
+          results.push({ landR: lr, landC: lc, capR: mr, capC: mc });
         }
       }
     }
   } else {
-    for (const [dr, dc] of DIAGONALS) {
-      const mr = r + dr, mc = c + dc;
-      const lr = r + 2 * dr, lc = c + 2 * dc;
+    const dirs = captureDirsFor(rules, player);
+    for (const [dr, dc] of dirs) {
+      const mr = r + dr, mc = c + dc, lr = r + 2 * dr, lc = c + 2 * dc;
       if (!inBounds(lr, lc)) continue;
       const mid = inBounds(mr, mc) ? board[mr][mc] : undefined;
-      if (mid && mid.player !== piece.player && board[lr][lc] === null) {
+      if (mid && mid.player !== player && board[lr][lc] === null) {
+        if (!rules.manCanCaptureKing && mid.king) continue;
         results.push({ landR: lr, landC: lc, capR: mr, capC: mc });
       }
     }
@@ -54,20 +193,34 @@ function getSingleCaptures(board, r, c) {
   return results;
 }
 
-function getSingleMoves(board, r, c) {
+function getSingleCaptures(board, r, c, rules) {
+  const piece = board[r][c];
+  if (!piece) return [];
+  return getSingleCapturesForPiece(board, r, c, piece.player, piece.king, rules);
+}
+
+function getSingleMoves(board, r, c, rules) {
   const piece = board[r][c];
   const results = [];
   if (!piece) return results;
   if (piece.king) {
-    for (const [dr, dc] of DIAGONALS) {
-      let cr = r + dr, cc = c + dc;
-      while (inBounds(cr, cc) && board[cr][cc] === null) {
-        results.push({ landR: cr, landC: cc });
-        cr += dr; cc += dc;
+    const dirs = rules.kingDirs;
+    if (rules.kingFlying) {
+      for (const [dr, dc] of dirs) {
+        let cr = r + dr, cc = c + dc;
+        while (inBounds(cr, cc) && board[cr][cc] === null) {
+          results.push({ landR: cr, landC: cc });
+          cr += dr; cc += dc;
+        }
+      }
+    } else {
+      for (const [dr, dc] of dirs) {
+        const cr = r + dr, cc = c + dc;
+        if (inBounds(cr, cc) && board[cr][cc] === null) results.push({ landR: cr, landC: cc });
       }
     }
   } else {
-    for (const [dr, dc] of manForwardDirs(piece.player)) {
+    for (const [dr, dc] of moveDirsFor(rules, piece.player)) {
       const cr = r + dr, cc = c + dc;
       if (inBounds(cr, cc) && board[cr][cc] === null) results.push({ landR: cr, landC: cc });
     }
@@ -75,47 +228,66 @@ function getSingleMoves(board, r, c) {
   return results;
 }
 
-function findCaptureSequences(board, r, c) {
+/* Resolve se, ao pousar em (landR,landC) no meio de uma captura, um
+   peão vira dama e/ou a sequência para aí -- o comportamento muda por
+   variante:
+   - "always-stop" (Inglesa/Italiana/Turca): sempre para e vira dama,
+     mesmo que ainda houvesse captura disponível dali.
+   - "brazilian": só vira dama (e para) se NÃO houver mais captura
+     disponível dali ainda como peão; se houver, continua capturando
+     como peão -- só "passou" pela casa de coroação.
+   - "russian": vira dama na hora e PODE continuar capturando no
+     mesmo lance já como dama voadora, se houver mais captura. */
+function resolveMidChainPromotion(nb, landR, landC, player, isKingNow, rules) {
+  if (isKingNow) return { isKing: true, stop: false };
+  if (!isPromotionRow(player, landR)) return { isKing: false, stop: false };
+  if (rules.promotionMode === "russian") return { isKing: true, stop: false };
+  if (rules.promotionMode === "always-stop") return { isKing: true, stop: true };
+  const moreAsPawn = getSingleCapturesForPiece(nb, landR, landC, player, false, rules).length > 0;
+  return { isKing: !moreAsPawn, stop: !moreAsPawn };
+}
+
+function findCaptureSequences(board, r, c, rules) {
   const results = [];
-  function dfs(curBoard, curR, curC, capturedSoFar, pathSoFar) {
-    const opts = getSingleCaptures(curBoard, curR, curC);
+  const startPiece = board[r][c];
+
+  function dfs(curBoard, curR, curC, isKingNow, capturedSoFar, pathSoFar) {
+    const opts = getSingleCapturesForPiece(curBoard, curR, curC, startPiece.player, isKingNow, rules);
     if (opts.length === 0) {
       if (capturedSoFar.length > 0) {
-        results.push({ path: pathSoFar.slice(), captured: capturedSoFar.slice(), length: capturedSoFar.length });
+        results.push({ path: pathSoFar.slice(), captured: capturedSoFar.slice(), length: capturedSoFar.length, endedAsKing: isKingNow });
       }
       return;
     }
     for (const opt of opts) {
       const nb = cloneBoard(curBoard);
-      const mover = nb[curR][curC];
       nb[curR][curC] = null;
       nb[opt.capR][opt.capC] = null;
-      let justCrowned = false;
-      if (!mover.king && isPromotionRow(mover.player, opt.landR)) {
-        mover.king = true;
-        justCrowned = true;
-      }
-      nb[opt.landR][opt.landC] = mover;
+
+      const { isKing, stop } = resolveMidChainPromotion(nb, opt.landR, opt.landC, startPiece.player, isKingNow, rules);
+      nb[opt.landR][opt.landC] = { player: startPiece.player, king: isKing };
+
       const newPath = [...pathSoFar, { r: opt.landR, c: opt.landC }];
       const newCaptured = [...capturedSoFar, { r: opt.capR, c: opt.capC }];
-      if (justCrowned) {
-        results.push({ path: newPath, captured: newCaptured, length: newCaptured.length, crownedMidChain: true });
+
+      if (stop) {
+        results.push({ path: newPath, captured: newCaptured, length: newCaptured.length, crownedMidChain: true, endedAsKing: true });
       } else {
-        dfs(nb, opt.landR, opt.landC, newCaptured, newPath);
+        dfs(nb, opt.landR, opt.landC, isKing, newCaptured, newPath);
       }
     }
   }
-  dfs(board, r, c, [], []);
+  dfs(board, r, c, startPiece.king, [], []);
   return results;
 }
 
-function getAllCaptureSequencesForPlayer(board, player) {
+function getAllCaptureSequencesForPlayer(board, player, rules) {
   const all = [];
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       const p = board[r][c];
       if (p && p.player === player) {
-        const seqs = findCaptureSequences(board, r, c);
+        const seqs = findCaptureSequences(board, r, c, rules);
         for (const s of seqs) all.push({ startR: r, startC: c, ...s });
       }
     }
@@ -123,18 +295,38 @@ function getAllCaptureSequencesForPlayer(board, player) {
   return all;
 }
 
-function getLegalTurns(board, player) {
-  const seqs = getAllCaptureSequencesForPlayer(board, player);
+/* Critério de desempate específico da Damas Italiana: entre as
+   sequências que já capturam o maior número de peças, prioriza (1) as
+   que capturam mais damas adversárias e, ainda empatado, (2) as que
+   capturam usando uma dama própria (em vez de um peão). */
+function applyItalianTieBreak(seqs, board) {
+  const kingsCaptured = (s) => s.captured.filter(({ r, c }) => board[r][c] && board[r][c].king).length;
+  const maxKings = Math.max(...seqs.map(kingsCaptured));
+  let pool = maxKings > 0 ? seqs.filter((s) => kingsCaptured(s) === maxKings) : seqs;
+
+  const moverIsKing = (s) => board[s.startR][s.startC] && board[s.startR][s.startC].king;
+  const anyMoverKing = pool.some(moverIsKing);
+  if (anyMoverKing) pool = pool.filter(moverIsKing);
+  return pool;
+}
+
+function getLegalTurns(board, player, rules) {
+  const seqs = getAllCaptureSequencesForPlayer(board, player, rules);
   if (seqs.length > 0) {
-    const max = Math.max(...seqs.map((s) => s.length));
-    return { type: "capture", options: seqs.filter((s) => s.length === max), maxCaptures: max };
+    let selected = seqs;
+    if (rules.maxCaptureRequired) {
+      const max = Math.max(...seqs.map((s) => s.length));
+      selected = seqs.filter((s) => s.length === max);
+    }
+    if (rules.captureTieBreak === "italian") selected = applyItalianTieBreak(selected, board);
+    return { type: "capture", options: selected, maxCaptures: Math.max(...selected.map((s) => s.length)) };
   }
   const moves = [];
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       const p = board[r][c];
       if (p && p.player === player) {
-        for (const m of getSingleMoves(board, r, c)) moves.push({ startR: r, startC: c, landR: m.landR, landC: m.landC });
+        for (const m of getSingleMoves(board, r, c, rules)) moves.push({ startR: r, startC: c, landR: m.landR, landC: m.landC });
       }
     }
   }
@@ -152,21 +344,19 @@ function applyMove(board, move) {
 
 function applyCaptureSequence(board, seq) {
   const nb = cloneBoard(board);
-  let piece = nb[seq.startR][seq.startC];
+  const startPiece = nb[seq.startR][seq.startC];
   nb[seq.startR][seq.startC] = null;
   for (let i = 0; i < seq.path.length; i++) {
-    const step = seq.path[i];
     const cap = seq.captured[i];
     nb[cap.r][cap.c] = null;
-    if (!piece.king && isPromotionRow(piece.player, step.r)) piece = { ...piece, king: true };
   }
   const last = seq.path[seq.path.length - 1];
-  nb[last.r][last.c] = piece;
+  nb[last.r][last.c] = { player: startPiece.player, king: seq.endedAsKing || startPiece.king };
   return nb;
 }
 
-function getResultingBoards(board, player) {
-  const turns = getLegalTurns(board, player);
+function getResultingBoards(board, player, rules) {
+  const turns = getLegalTurns(board, player, rules);
   if (turns.type === "capture") return turns.options.map((seq) => ({ board: applyCaptureSequence(board, seq), move: seq }));
   return turns.options.map((mv) => ({ board: applyMove(board, mv), move: mv }));
 }
@@ -184,7 +374,7 @@ function countPieces(board, player) {
 
 /* ---------------- IA (minimax com poda alfa-beta) ---------------- */
 
-function evaluate(board, aiPlayer) {
+function evaluate(board, aiPlayer, rules) {
   const opp = opponentOf(aiPlayer);
   const me = countPieces(board, aiPlayer);
   const them = countPieces(board, opp);
@@ -196,7 +386,7 @@ function evaluate(board, aiPlayer) {
       if (!p) continue;
       const sign = p.player === aiPlayer ? 1 : -1;
       if (!p.king) {
-        const advancement = p.player === 1 ? 7 - r : r;
+        const advancement = p.player === 1 ? SIZE - 1 - r : r;
         score += sign * advancement * 2;
       }
       const centerBonus = 3 - Math.min(Math.abs(c - 3.5), 3.5);
@@ -206,17 +396,17 @@ function evaluate(board, aiPlayer) {
   return score;
 }
 
-function minimax(board, player, aiPlayer, depth, alpha, beta) {
-  const turns = getLegalTurns(board, player);
+function minimax(board, player, aiPlayer, depth, alpha, beta, rules) {
+  const turns = getLegalTurns(board, player, rules);
   if (turns.options.length === 0) return player === aiPlayer ? -100000 - depth : 100000 + depth;
-  if (depth === 0) return evaluate(board, aiPlayer);
+  if (depth === 0) return evaluate(board, aiPlayer, rules);
 
-  const results = getResultingBoards(board, player);
+  const results = getResultingBoards(board, player, rules);
   const maximizing = player === aiPlayer;
   if (maximizing) {
     let best = -Infinity;
     for (const { board: nb } of results) {
-      const val = minimax(nb, opponentOf(player), aiPlayer, depth - 1, alpha, beta);
+      const val = minimax(nb, opponentOf(player), aiPlayer, depth - 1, alpha, beta, rules);
       if (val > best) best = val;
       if (val > alpha) alpha = val;
       if (beta <= alpha) break;
@@ -225,7 +415,7 @@ function minimax(board, player, aiPlayer, depth, alpha, beta) {
   }
   let best = Infinity;
   for (const { board: nb } of results) {
-    const val = minimax(nb, opponentOf(player), aiPlayer, depth - 1, alpha, beta);
+    const val = minimax(nb, opponentOf(player), aiPlayer, depth - 1, alpha, beta, rules);
     if (val < best) best = val;
     if (val < beta) beta = val;
     if (beta <= alpha) break;
@@ -233,26 +423,36 @@ function minimax(board, player, aiPlayer, depth, alpha, beta) {
   return best;
 }
 
-function chooseAIMove(board, aiPlayer, depth) {
-  const results = getResultingBoards(board, aiPlayer);
+function chooseAIMove(board, aiPlayer, depth, rules) {
+  const results = getResultingBoards(board, aiPlayer, rules);
   if (results.length === 0) return null;
   let bestVal = -Infinity;
   let bestMoves = [];
   for (const r of results) {
-    const val = minimax(r.board, opponentOf(aiPlayer), aiPlayer, depth - 1, -Infinity, Infinity);
+    const val = minimax(r.board, opponentOf(aiPlayer), aiPlayer, depth - 1, -Infinity, Infinity, rules);
     if (val > bestVal) { bestVal = val; bestMoves = [r]; } else if (val === bestVal) { bestMoves.push(r); }
   }
   return bestMoves[Math.floor(Math.random() * bestMoves.length)];
 }
 
 const DIFFICULTY_DEPTH = { facil: 2, normal: 4, dificil: 6 };
+function depthFor(difficulty, variant) {
+  const base = DIFFICULTY_DEPTH[difficulty] ?? 4;
+  // Damas Turca tem 16 peças (em vez de 12) e dama que voa em 4 direções
+  // ortogonais -- o fator de ramificação é maior, então reduz 1 nível
+  // pra manter o tempo de resposta da IA parecido com o das outras variantes.
+  if (variant === "turca") return Math.max(2, base - 1);
+  return base;
+}
 
 /* ============================================================
    ESTADO DO JOGO
    ============================================================ */
 
 const state = {
-  board: initialBoard(),
+  variant: "brasileira",
+  rules: VARIANTS.brasileira,
+  board: initialBoard(VARIANTS.brasileira),
   turn: 1,
   difficulty: "normal",
   selected: null,
@@ -268,19 +468,30 @@ const state = {
   timerId: null,
 };
 
-const STORAGE_KEY = "damas_stats_v1";
+const STORAGE_KEY = "damas_stats_v2";
 
 function loadStats() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { wins: 0 };
+    if (!raw) return {};
     return JSON.parse(raw);
   } catch (e) {
-    return { wins: 0 };
+    return {};
   }
 }
 function saveStats(stats) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch (e) { /* ignora */ }
+}
+function getVariantWins(variant) {
+  const stats = loadStats();
+  return (stats[variant] && stats[variant].wins) || 0;
+}
+function incrementVariantWins(variant) {
+  const stats = loadStats();
+  if (!stats[variant]) stats[variant] = { wins: 0 };
+  stats[variant].wins++;
+  saveStats(stats);
+  return stats[variant].wins;
 }
 
 /* ============================================================
@@ -288,7 +499,9 @@ function saveStats(stats) {
    ============================================================ */
 
 const boardEl = document.getElementById("board");
-const difficultyButtons = document.querySelectorAll(".diff-btn");
+const variantButtons = document.querySelectorAll("#variant-tabs .diff-btn");
+const variantBlurbEl = document.getElementById("variant-blurb");
+const difficultyButtons = document.querySelectorAll("#difficulty-tabs .diff-btn");
 const turnStatusEl = document.getElementById("turn-status");
 const turnHintEl = document.getElementById("turn-hint");
 const turnIconEl = document.getElementById("turn-icon");
@@ -314,10 +527,11 @@ function buildBoardDOM() {
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       const sq = document.createElement("div");
+      const playable = state.rules.allSquares || isDark(r, c);
       sq.className = "square " + (isDark(r, c) ? "dark" : "light");
       sq.dataset.row = r;
       sq.dataset.col = c;
-      if (isDark(r, c)) sq.addEventListener("click", () => onSquareClick(r, c));
+      if (playable) sq.addEventListener("click", () => onSquareClick(r, c));
       boardEl.appendChild(sq);
     }
   }
@@ -407,8 +621,7 @@ function renderSidebar() {
   hintBtn.disabled = state.hintsLeft <= 0 || state.gameOver;
   undoBtn.disabled = state.checkpoints.length < 2 || state.gameOver || state.turn !== 1 || state.aiThinking;
 
-  const stats = loadStats();
-  winsCountEl.textContent = stats.wins || 0;
+  winsCountEl.textContent = getVariantWins(state.variant);
 
   if (state.gameOver) {
     turnIconEl.style.color = "var(--text-soft)";
@@ -443,9 +656,11 @@ function renderAll() { renderBoard(); renderSidebar(); }
    FLUXO DE JOGO
    ============================================================ */
 
-function startNewGame(difficulty) {
+function startNewGame(difficulty, variant) {
   state.difficulty = difficulty || state.difficulty;
-  state.board = initialBoard();
+  state.variant = variant || state.variant;
+  state.rules = VARIANTS[state.variant];
+  state.board = initialBoard(state.rules);
   state.turn = 1;
   state.selected = null;
   state.activeCapturePiece = null;
@@ -457,7 +672,11 @@ function startNewGame(difficulty) {
   state.seconds = 0;
   state.checkpoints = [];
 
+  buildBoardDOM();
+
   difficultyButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.difficulty === state.difficulty));
+  variantButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.variant === state.variant));
+  if (variantBlurbEl) variantBlurbEl.textContent = state.rules.blurb;
 
   hideOverlay();
   stopTimer();
@@ -470,7 +689,7 @@ function beginHumanTurn(isCheckpoint) {
   state.selected = null;
   state.activeCapturePiece = null;
   state.activeCaptureSequences = null;
-  state.legalTurns = getLegalTurns(state.board, 1);
+  state.legalTurns = getLegalTurns(state.board, 1, state.rules);
 
   if (isCheckpoint !== false) state.checkpoints.push(cloneBoard(state.board));
 
@@ -535,8 +754,8 @@ function performStep(r, c) {
   const mover = nb[state.selected.r][state.selected.c];
   nb[state.selected.r][state.selected.c] = null;
   nb[cap.r][cap.c] = null;
-  if (!mover.king && isPromotionRow(mover.player, r)) mover.king = true;
-  nb[r][c] = mover;
+  const { isKing } = resolveMidChainPromotion(nb, r, c, mover.player, mover.king, state.rules);
+  nb[r][c] = { player: mover.player, king: isKing };
   state.board = nb;
 
   // estreita as sequências: mantém só as que concordam com o passo escolhido, removendo o passo já dado
@@ -561,7 +780,7 @@ function finishHumanTurn() {
   state.activeCapturePiece = null;
   state.activeCaptureSequences = null;
 
-  const p2Turns = getLegalTurns(state.board, 2);
+  const p2Turns = getLegalTurns(state.board, 2, state.rules);
   if (p2Turns.options.length === 0) {
     endGame(true, "O computador ficou sem movimentos possíveis.");
     return;
@@ -577,8 +796,8 @@ function triggerAITurn() {
   state.aiThinking = true;
   renderAll();
   setTimeout(() => {
-    const depth = DIFFICULTY_DEPTH[state.difficulty] ?? 4;
-    const result = chooseAIMove(state.board, 2, depth);
+    const depth = depthFor(state.difficulty, state.variant);
+    const result = chooseAIMove(state.board, 2, depth, state.rules);
     if (result) state.board = result.board;
     state.aiThinking = false;
     beginHumanTurn();
@@ -596,8 +815,8 @@ function undo() {
 
 function useHint() {
   if (state.gameOver || state.aiThinking || state.turn !== 1 || state.hintsLeft <= 0) return;
-  const depth = Math.max(3, DIFFICULTY_DEPTH[state.difficulty] ?? 4);
-  const result = chooseAIMove(state.board, 1, depth);
+  const depth = Math.max(3, depthFor(state.difficulty, state.variant));
+  const result = chooseAIMove(state.board, 1, depth, state.rules);
   if (!result) return;
   const move = result.move;
   const cells = [{ r: move.startR, c: move.startC }];
@@ -637,16 +856,14 @@ function endGame(humanWon, reason) {
   renderAll();
 
   if (humanWon) {
-    const stats = loadStats();
-    stats.wins = (stats.wins || 0) + 1;
-    saveStats(stats);
+    incrementVariantWins(state.variant);
     renderSidebar();
     showOverlay("🏆 Você venceu!", reason || "O computador não tem mais peças.", [
-      { label: "Jogar novamente", action: () => startNewGame(state.difficulty) },
+      { label: "Jogar novamente", action: () => startNewGame(state.difficulty, state.variant) },
     ]);
   } else {
     showOverlay("Fim de jogo", reason || "O computador venceu esta partida.", [
-      { label: "Tentar de novo", action: () => startNewGame(state.difficulty) },
+      { label: "Tentar de novo", action: () => startNewGame(state.difficulty, state.variant) },
     ]);
   }
 }
@@ -670,10 +887,13 @@ function hideOverlay() { overlay.classList.remove("visible"); }
    EVENTOS
    ============================================================ */
 
-difficultyButtons.forEach((btn) => {
-  btn.addEventListener("click", () => startNewGame(btn.dataset.difficulty));
+variantButtons.forEach((btn) => {
+  btn.addEventListener("click", () => startNewGame(state.difficulty, btn.dataset.variant));
 });
-newGameBtn.addEventListener("click", () => startNewGame(state.difficulty));
+difficultyButtons.forEach((btn) => {
+  btn.addEventListener("click", () => startNewGame(btn.dataset.difficulty, state.variant));
+});
+newGameBtn.addEventListener("click", () => startNewGame(state.difficulty, state.variant));
 undoBtn.addEventListener("click", undo);
 hintBtn.addEventListener("click", useHint);
 
@@ -681,8 +901,7 @@ hintBtn.addEventListener("click", useHint);
    INICIALIZAÇÃO
    ============================================================ */
 
-buildBoardDOM();
-startNewGame(state.difficulty);
+startNewGame(state.difficulty, state.variant);
 
 const footerYearEl = document.getElementById("footer-year");
 if (footerYearEl) footerYearEl.textContent = new Date().getFullYear();

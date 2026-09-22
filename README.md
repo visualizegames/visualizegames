@@ -2,8 +2,9 @@
 
 Site estático (HTML + CSS + JS puro, sem dependências) pronto para publicar
 na web. Jogos disponíveis: **Sudoku** (6 dificuldades, dicas, anotações,
-cronômetro e contador de erros) e **Damas** (regras brasileiras, captura
-obrigatória, dama voadora e 3 níveis de dificuldade contra o computador).
+cronômetro e contador de erros) e **Damas** (5 variantes de regras —
+Brasileira, Inglesa, Russa, Italiana e Turca — e 3 níveis de dificuldade
+contra o computador).
 
 ## Estrutura
 
