@@ -122,22 +122,22 @@
 }
 .num-btn:hover { background: var(--same-value); }
 
-/* Número com as 9 ocorrências corretas já colocadas: fica esmaecido
-   e ganha uma marca de concluído (✓) no canto. */
+/* Número com as 9 ocorrências corretas já colocadas: fica esmaecido e o
+   próprio dígito dá lugar a uma marca de concluído (✓) centralizada. */
 .num-btn.depleted {
   background: var(--bg);
-  color: var(--text-soft);
+  color: transparent;
 }
 .num-btn.depleted::after {
   content: "";
   position: absolute;
-  top: 5px;
-  right: 7px;
-  width: 5px;
-  height: 9px;
-  border-right: 2px solid var(--success);
-  border-bottom: 2px solid var(--success);
-  transform: rotate(40deg);
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 18px;
+  border-right: 3px solid var(--success);
+  border-bottom: 3px solid var(--success);
+  transform: translate(-50%, -60%) rotate(40deg);
 }
 
 /* --selected precisa de uma variável própria (não está na base) */
